@@ -4,11 +4,21 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+/**
+ * Реализация двусвязного списка.
+ *
+ * @param <T> тип элементов, хранящихся в связном списке
+ */
 public class LinkedList<T> implements List<T> {
     private LinkedListNode<T> head;
     private LinkedListNode<T> tail;
     private int size;
 
+    /**
+     * Внутренний класс, представляющий узел в связном списке.
+     *
+     * @param <T> тип элемента, хранящегося в узле
+     */
     private static class LinkedListNode<T> {
         public LinkedListNode<T> next;
         public LinkedListNode<T> prev;
@@ -19,15 +29,25 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
+    /**
+     * Конструктор для создания пустого связного списка.
+     */
     public LinkedList() {
         head = null;
         tail = null;
         size = 0;
     }
 
+    /**
+     * Добавляет элемент в конец связного списка.
+     *
+     * @param elem добавляемый элемент
+     * @return true, если элемент успешно добавлен
+     * @throws NullPointerException если переданный элемент равен null
+     */
     @Override
     public boolean add(T elem) {
-        Objects.requireNonNull(elem, "Element cannot be null");
+        Objects.requireNonNull(elem, "Элемент не может быть null");
         LinkedListNode<T> newNode = new LinkedListNode<>(elem);
         if (tail == null) {
             head = newNode;
@@ -41,6 +61,12 @@ public class LinkedList<T> implements List<T> {
         return true;
     }
 
+    /**
+     * Проверяет, содержит ли связный список заданный элемент.
+     *
+     * @param elem элемент для поиска
+     * @return true, если элемент присутствует в списке, иначе false
+     */
     @Override
     public boolean contains(T elem) {
         LinkedListNode<T> ptr = head;
@@ -51,15 +77,48 @@ public class LinkedList<T> implements List<T> {
         return false;
     }
 
+    /**
+     * Добавляет все элементы из коллекции в конец связного списка.
+     *
+     * @param c коллекция, содержащая добавляемые элементы
+     * @return true, если все элементы успешно добавлены
+     * @throws NullPointerException если переданный элемент равен null
+     */
     @Override
     public boolean addAll(Collections<T> c) {
-        Objects.requireNonNull(c, "Collection cannot be null");
+        Objects.requireNonNull(c, "Коллекция не может быть null");
         for (T elem : c) {
             add(elem);
         }
         return true;
     }
 
+    /**
+     * Удаляет указанный элемент из связного списка.
+     *
+     * @param elem удаляемый элемент
+     * @return true, если элемент был найден и удален
+     * @throws NullPointerException если переданный элемент равен null
+     */
+    @Override
+    public boolean remove(T elem) {
+        Objects.requireNonNull(elem, "Элемент не может быть null");
+        LinkedListNode<T> ptr = head;
+        while (ptr != null) {
+            if (Objects.equals(ptr.info, elem)) {
+                removeNode(ptr);
+                return true;
+            }
+            ptr = ptr.next;
+        }
+        return false;
+    }
+
+    /**
+     * Удаляет указанный узел из связного списка.
+     *
+     * @param nodeToRemove удаляемый узел
+     */
     private void removeNode(LinkedListNode<T> nodeToRemove) {
         if (nodeToRemove == null) return;
         if (nodeToRemove == head) {
@@ -75,20 +134,9 @@ public class LinkedList<T> implements List<T> {
         size--;
     }
 
-    @Override
-    public boolean remove(T elem) {
-        Objects.requireNonNull(elem, "Element cannot be null");
-        LinkedListNode<T> ptr = head;
-        while (ptr != null) {
-            if (Objects.equals(ptr.info, elem)) {
-                removeNode(ptr);
-                return true;
-            }
-            ptr = ptr.next;
-        }
-        return false;
-    }
-
+    /**
+     * Очищает все элементы из связного списка.
+     */
     @Override
     public void clear() {
         head = null;
@@ -96,6 +144,11 @@ public class LinkedList<T> implements List<T> {
         size = 0;
     }
 
+    /**
+     * Предоставляет итератор для связного списка.
+     *
+     * @return итератор по элементам связного списка
+     */
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -115,16 +168,31 @@ public class LinkedList<T> implements List<T> {
         };
     }
 
+    /**
+     * Возвращает количество элементов в связном списке.
+     *
+     * @return размер связного списка
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Проверяет, пуст ли связный список.
+     *
+     * @return true, если связный список не содержит элементов, иначе false
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Преобразует связный список в массив объектов.
+     *
+     * @return массив, содержащий все элементы связного списка
+     */
     @Override
     public Object[] toArray() {
         Object[] arr = new Object[size];
@@ -137,22 +205,36 @@ public class LinkedList<T> implements List<T> {
         return arr;
     }
 
+    /**
+     * Возвращает элемент по указанному индексу в связном списке.
+     *
+     * @param index индекс элемента для возврата
+     * @return элемент по указанному индексу
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Index out of bounds");
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Индекс за пределами диапазона");
         LinkedListNode<T> ptr = head;
         for (int i = 0; i < index; i++) {
             ptr = ptr.next;
         }
-        if (ptr == null) throw new NoSuchElementException("No element found at index: " + index);
+        if (ptr == null) throw new NoSuchElementException("Элемент не найден по индексу: " + index);
         return ptr.info;
     }
 
-
+    /**
+     * Вставляет элемент в указанную позицию в связном списке.
+     *
+     * @param index индекс, в который вставляется элемент
+     * @param elem  элемент для вставки
+     * @throws NullPointerException      если элемент равен null
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @Override
     public void add(int index, T elem) {
-        if (elem == null) throw new NullPointerException("Element cannot be null");
-        if (index < 0 || index > size) throw new IndexOutOfBoundsException("Index out of bounds");
+        if (elem == null) throw new NullPointerException("Элемент не может быть null");
+        if (index < 0 || index > size) throw new IndexOutOfBoundsException("Индекс за пределами диапазона");
         LinkedListNode<T> newNode = new LinkedListNode<>(elem);
         if (index == 0) {
             newNode.next = head;
@@ -176,10 +258,16 @@ public class LinkedList<T> implements List<T> {
         size++;
     }
 
-
+    /**
+     * Удаляет элемент по указанному индексу из связного списка.
+     *
+     * @param index индекс удаляемого элемента
+     * @return удаленный элемент
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @Override
     public T removeByIndex(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Index out of bounds");
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Индекс за пределами диапазона");
 
         LinkedListNode<T> ptr = head;
         if (index == 0) {
@@ -200,7 +288,11 @@ public class LinkedList<T> implements List<T> {
         return ptr.info;
     }
 
-
+    /**
+     * Генерирует строковое представление связного списка.
+     *
+     * @return строка, содержащая все элементы связного списка
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
