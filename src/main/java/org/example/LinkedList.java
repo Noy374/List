@@ -85,7 +85,7 @@ public class LinkedList<T> implements List<T> {
      * @throws NullPointerException если переданный элемент равен null
      */
     @Override
-    public boolean addAll(Collections<T> c) {
+    public boolean addAll(Collection<T> c) {
         Objects.requireNonNull(c, "Коллекция не может быть null");
         for (T elem : c) {
             add(elem);
